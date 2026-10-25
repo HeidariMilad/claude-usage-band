@@ -1,0 +1,1 @@
+{ "name": "usage-band", "version": "0.1.0", "description": "Band above the prompt showing 5h/7d usage limits, context fill and session cost", "author": { "name": "HeidariMilad" }, "license": "MIT", "homepage": "https://github.com/HeidariMilad/claude-usage-band", "types": "./types/index.d.ts" }

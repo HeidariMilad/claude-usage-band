@@ -1,0 +1,6 @@
+{
+  "name": "claude-usage-band",
+  "owner": { "name": "HeidariMilad" },
+  "description": "Claude Code mod: plan usage limits above the prompt",
+  "plugins": [{ "name": "usage-band", "source": "./", "description": "Band above the prompt showing 5h/7d usage limits, context fill and session cost" }]
+}
