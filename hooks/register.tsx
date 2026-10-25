@@ -21,13 +21,13 @@ const pill = (percent: number) => {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="10" viewBox="0 0 48 10"><rect width="48" height="10" rx="5" fill="#8884" /><rect width="${fill}" height="10" rx="5" fill="${tint(percent)}" /></svg>`
 }
 
-const until = (iso: string | undefined, now: number) => {
+// An absolute local time, like claude.ai's: a countdown would go stale, since the band redraws only when a figure moves.
+const resetAt = (iso: string | undefined, now: number) => {
   if (!iso) return undefined
-  const mins = Math.max(0, Math.round((Date.parse(iso) - now) / 60000))
-  const d = Math.floor(mins / 1440)
-  const h = Math.floor((mins % 1440) / 60)
-  const m = mins % 60
-  return `resets in ${d > 0 ? `${d}d ${h}h` : h > 0 ? `${h}h ${m}m` : `${m}m`}`
+  const at = new Date(iso)
+  const time = at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const isToday = at.toDateString() === new Date(now).toDateString()
+  return `resets ${isToday ? time : `${at.toLocaleDateString([], { weekday: 'short' })} ${time}`}`
 }
 
 const thousands = (n: number) => (n >= 1000 ? `${Math.round(n / 1000)}k` : `${n}`)
@@ -78,7 +78,7 @@ export const register: Register = on => {
       <Box flexDirection="column" gap="sm">
         {others}
         <Box flexDirection="row" flexWrap="wrap" columnGap="lg" rowGap="sm" borderStyle="round" borderColor="subtle" paddingX="md" paddingY="sm">
-          {u.rateLimits.map(w => meter(LABELS[w.kind] ?? w.kind, w.percentUsed, until(w.resetsAt, now)))}
+          {u.rateLimits.map(w => meter(LABELS[w.kind] ?? w.kind, w.percentUsed, resetAt(w.resetsAt, now)))}
           {ctx.percent !== undefined &&
             meter('Context', ctx.percent, ctx.tokens === undefined ? undefined : `${thousands(ctx.tokens)} of ${thousands(ctx.window)}`)}
           {u.cost && (
